@@ -1,5 +1,6 @@
 /*sections------------------------------------------------------------------- */
 body {
+    text-align: center;
 }
 #wrapper {
 }
@@ -72,4 +73,21 @@ a:visited {
 a:hover {
 }
 a:active {
+}
+
+#search{
+    display:block
+}
+#result{
+    display:none
+}
+#loading {
+    display: none;
+    text-align: center;
+    padding-top: 9em;
+}
+#error {
+    display: none;
+    text-align: center;
+    padding-top: 10em;
 }

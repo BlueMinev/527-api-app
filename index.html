@@ -6,23 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="css/normailse.css" />
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+    <script src="javascript/index.js"></script>
     <title>Victoria and Albert Museum API showcase</title>
   </head>
 
   <body>
     <h1>Victoria and Albert Museum API showcase</h1>
-    <p>    
-        <input type="text" placeholder="Search for an item!">
-        <input type="submit">
-    </p>
-
-    <p>
-        <h2 id="title">Title of piece goes here</h2>
-        <h3 id="date">date goes here ig</h3>
-        <img id="image" src="/resources/placeholder.png" width="500">
-    </p>
-    <p id="desc">description of item goes here</p>
-    
-
+    <div id="search">
+      <form>
+        <input type="text" id="searchbar" placeholder="Search for an item!" />
+        <input type="submit" id="submitbtn" />
+      </form>
+    </div>
+    <div id="loading">
+      <img src="/resources/loading.gif" />
+    </div>
+    <div id="error">
+      <p>Uh oh! Something went wrong!</p>
+      <p><a id="reset_error" href="#">Try again</a></p>
+    </div>
+    <div id="result">
+      <h2 id="title">Title of piece goes here</h2>
+      <h3 id="date">date goes here ig</h3>
+      <img id="image" src="/resources/placeholder.png" width="500" />
+      <p id="desc">description of item goes here</p>
+    </div>
   </body>
 </html>
