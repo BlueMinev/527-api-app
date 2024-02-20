@@ -20,8 +20,35 @@ window.addEventListener("load", function () {
       data.append("search", search);
       // simulate delay when submitting the data to the server
       // (we'll add the real submit code in a later tutorial)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      var success = Math.random() > 0.25;
+      var xhr = new XMLHttpRequest();
+      var url = "https://api.vam.ac.uk/v2/objects/search?q="
+      url= url + search;
+        var title = document.querySelector("#title")
+        var date = document.querySelector("#date")
+        var image = document.querySelector("#image")
+        var desc = document.querySelector("#desc")
+      try {
+        const response = await fetch ( url );
+        const value = await response.json ();
+      title.textContent=value["records"][0]["_primaryTitle"];
+      date.textContent=value["records"][0]["_primaryDate"];
+      imageValue=value["records"][1]["_images"]["_iiif_image_base_url"] + "/full/full/0/default.jpg";
+      console.log(imageValue);
+      image.setAttribute("src",imageValue);
+      whereToFind=value["records"][0]["_currentLocation"]["displayName"]
+      madeBy=value["records"][0]["_primaryMaker"]["name"]
+      type=value["records"][0]["objectType"]
+      description = "A " + type + " made by " + madeBy + ". \n You can find this object : " + whereToFind + "."
+      desc.textContent=description;
+
+
+
+      success=true;
+        } catch (error) {
+        console.log(error);
+        success=false;
+        }
+    
       // hide loading icon when we receive a the response
       document.querySelector("#loading").style.display = "none";
       // show success or error section depending on the response
