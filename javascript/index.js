@@ -1,72 +1,115 @@
 window.addEventListener("load", function () {
-  var form = document.querySelector("#search form");
+  let form = document.querySelector("#search form");
 
   form.addEventListener("submit", sendMessage);
 
   async function sendMessage(evt) {
     evt.preventDefault();
     reset();
-    var search = document.querySelector("#searchbar").value.trim();
-    var fields_ok = true;
+    document.querySelector("#loading").style.display = "block";
+    let search = document.querySelector("#searchbar").value.trim();
+    let fields_ok = true;
+    let success = true;
     if (search.length == 0) {
       fields_ok = false;
     }
     if (fields_ok) {
-      console.log(search);
       // hide form and show loading icon
-      document.querySelector("#loading").style.display = "block";
+
       // prepare data for transport to server
-      var data = new FormData();
-      data.append("search", search);
-      // simulate delay when submitting the data to the server
-      // (we'll add the real submit code in a later tutorial)
-      var xhr = new XMLHttpRequest();
-      var url = "https://api.vam.ac.uk/v2/objects/search?q="
-      url= url + search;
-        var title = document.querySelector("#title")
-        var date = document.querySelector("#date")
-        var image = document.querySelector("#image")
-        var desc = document.querySelector("#desc")
-      try {
-        const response = await fetch ( url );
-        const value = await response.json ();
-      title.textContent=value["records"][0]["_primaryTitle"];
-      date.textContent=value["records"][0]["_primaryDate"];
-      imageValue=value["records"][1]["_images"]["_iiif_image_base_url"] + "/full/full/0/default.jpg";
-      console.log(imageValue);
-      image.setAttribute("src",imageValue);
-      whereToFind=value["records"][0]["_currentLocation"]["displayName"]
-      madeBy=value["records"][0]["_primaryMaker"]["name"]
-      type=value["records"][0]["objectType"]
-      description = "A " + type + " made by " + madeBy + ". \n You can find this object : " + whereToFind + "."
-      desc.textContent=description;
+      let url = "https://api.vam.ac.uk/v2/objects/search?q=";
+      url = url + search;
+      // create variables for data on html page that will be changed
+      let result = document.querySelector("#result");
+      document.querySelector("#loading").style.display = "block";
+      // perfom fetch api
+      fetch(url)
+        .then(function (response) {
+          document.querySelector("#result").style.display = "block";
+          // hide loading icon when we receive a the response
+          document.querySelector("#loading").style.display = "none";
+          return response.json();
+        })
+        .then(function (value) {
+          let pageSize = Number(value["info"]["page_size"]);
+          for (let i = 0; i < pageSize; i++) {
+            // sets base
+            let title = "Unknown";
+            let date = "Unknown";
+            let desc = "There is no information available on this piece.";
+            let imageValue =
+              "https://cdn.glitch.global/8e9207b0-f392-4744-9556-fb5b58c2ee12/no_image.png?v=1708461833844";
 
+            if (value["records"][i]["_primaryTitle"] === "") {
+            } else {
+              title = value["records"][i]["_primaryTitle"];
+            }
 
+            date = value["records"][i]["_primaryDate"];
 
-      success=true;
-        } catch (error) {
-        console.log(error);
-        success=false;
-        }
-    
-      // hide loading icon when we receive a the response
-      document.querySelector("#loading").style.display = "none";
-      // show success or error section depending on the response
-      if (success) {
-        document.querySelector("#result").style.display = "block";
-      } else {
-        document.querySelector("#error").style.display = "block";
-      }
+            if (
+              value["records"][i]["_images"]["_iiif_image_base_url"] ===
+              undefined
+            ) {
+            } else {
+              imageValue =
+                value["records"][i]["_images"]["_iiif_image_base_url"] +
+                "/full/full/0/default.jpg";
+            }
+
+            if (value["records"][i]["_currentLocation"]["type"] === "storage") {
+              whereToFind = "This item is currently not being displayed";
+            } else {
+              whereToFind =
+                "You can find this object : " +
+                value["records"][i]["_currentLocation"]["displayName"];
+            }
+
+            let madeBy = value["records"][i]["_primaryMaker"]["name"];
+            let type = value["records"][i]["objectType"];
+            let imgdesc = "A photo of a " + type + " made by " + madeBy + ".";
+            desc = "A " + type + " made by " + madeBy + "." + whereToFind + ".";
+
+            var cardDiv = document.createElement("div");
+            cardDiv.className = "card";
+
+            var titleH2 = document.createElement("h2");
+            titleH2.className = "title";
+            cardDiv.textContent = title;
+            var dateH3 = document.createElement("h3");
+            dateH3.className = "date";
+            dateH3.textContent = date;
+            var imgElm = document.createElement("img");
+            imgElm.className = "image";
+            imgElm.setAttribute("src", imageValue);
+            imgElm.setAttribute("alt", imgdesc);
+            var para = document.createElement("p");
+            para.className = "desc";
+            para.textContent = desc;
+
+            cardDiv.appendChild(titleH2);
+            cardDiv.appendChild(dateH3);
+            cardDiv.appendChild(imgElm);
+            cardDiv.appendChild(para);
+            result.appendChild(cardDiv);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          document.querySelector("#error").style.display = "block";
+          // hide loading icon when we receive a the response
+          document.querySelector("#loading").style.display = "none";
+        });
     }
-  }
 
-  var reset_error = document.querySelector("#reset_error");
-  reset_error.addEventListener("click", reset);
+    let reset_error = document.querySelector("#reset_error");
+    reset_error.addEventListener("click", reset);
 
-  function reset(evt) {
-    document.querySelector("#result").style.display = "none";
-    document.querySelector("#error").style.display = "none";
-    document.querySelector("#loading").style.display = "none";
-    //document.querySelector("#searchbar").value = "";
+    function reset(evt) {
+      document.querySelector("#result").style.display = "none";
+      document.querySelector("#error").style.display = "none";
+      document.querySelector("#loading").style.display = "none";
+      document.querySelector("#result").innerHTML = "";
+    }
   }
 });

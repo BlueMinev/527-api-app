@@ -10,26 +10,29 @@
     <title>Victoria and Albert Museum API showcase</title>
   </head>
 
-  <body>
-    <h1>Victoria and Albert Museum API showcase</h1>
+  <body id="wrapper">
+    <h1 id="head">Victoria and Albert Museum API showcase</h1>
     <div id="search">
       <form>
+        <label for="searchbar" id="label"
+          >Search items of the V&A Museum here:</label
+        >
+        <br />
         <input type="text" id="searchbar" placeholder="Search for an item!" />
-        <input type="submit" id="submitbtn" />
+
+        <input type="submit" id="submitbtn" value="Submit" />
       </form>
     </div>
     <div id="loading">
-      <img src="/resources/loading.gif" />
+      <img
+        src="https://cdn.glitch.global/8e9207b0-f392-4744-9556-fb5b58c2ee12/loading.gif?v=1708443936979"
+        alt="loading"
+      />
     </div>
     <div id="error">
       <p>Uh oh! Something went wrong! Check your search is spelt right.</p>
       <p><a id="reset_error" href="#">Try again</a></p>
     </div>
-    <div id="result">
-      <h2 id="title">Title of piece goes here</h2>
-      <h3 id="date">date goes here ig</h3>
-      <img id="image" src="/resources/placeholder.png" width="500" />
-      <p id="desc">description of item goes here</p>
-    </div>
+    <div id="result"></div>
   </body>
 </html>
