@@ -14,8 +14,6 @@ window.addEventListener("load", function () {
       fields_ok = false;
     }
     if (fields_ok) {
-      // hide form and show loading icon
-
       // prepare data for transport to server
       let url = "https://api.vam.ac.uk/v2/objects/search?q=";
       url = url + search;
@@ -33,18 +31,16 @@ window.addEventListener("load", function () {
         .then(function (value) {
           let pageSize = Number(value["info"]["page_size"]);
           for (let i = 0; i < pageSize; i++) {
-            // sets base
+            // sets base values
             let title = "Unknown";
             let date = "Unknown";
             let desc = "There is no information available on this piece.";
-            let imageValue =
-              "https://cdn.glitch.global/8e9207b0-f392-4744-9556-fb5b58c2ee12/no_image.png?v=1708461833844";
+            let imageValue = "VnAAPI/resources/placeholder.png";
 
             if (value["records"][i]["_primaryTitle"] === "") {
             } else {
               title = value["records"][i]["_primaryTitle"];
             }
-
             date = value["records"][i]["_primaryDate"];
 
             if (
@@ -72,17 +68,21 @@ window.addEventListener("load", function () {
 
             var cardDiv = document.createElement("div");
             cardDiv.className = "card";
-
             var titleH2 = document.createElement("h2");
             titleH2.className = "title";
-            cardDiv.textContent = title;
+            titleH2.textContent = title;
             var dateH3 = document.createElement("h3");
             dateH3.className = "date";
             dateH3.textContent = date;
             var imgElm = document.createElement("img");
-            imgElm.className = "image";
+            imgElm.onerror = function () {
+              this.src = "VnAAPI/resources/placeholder.png";
+            };
+            imgElm.classList.add("image");
+
             imgElm.setAttribute("src", imageValue);
             imgElm.setAttribute("alt", imgdesc);
+
             var para = document.createElement("p");
             para.className = "desc";
             para.textContent = desc;
@@ -97,7 +97,7 @@ window.addEventListener("load", function () {
         .catch(function (error) {
           console.log(error);
           document.querySelector("#error").style.display = "block";
-          // hide loading icon when we receive a the response
+          // hide loading icon when we receive the response
           document.querySelector("#loading").style.display = "none";
         });
     }
